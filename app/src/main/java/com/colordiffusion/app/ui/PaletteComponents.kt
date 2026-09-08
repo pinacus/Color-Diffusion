@@ -38,7 +38,7 @@ import com.colordiffusion.app.util.contrastColor
 
 @Composable fun ColorCard(color: Int, isLocked: Boolean, onLock: () -> Unit, onCopy: () -> Unit, modifier: Modifier = Modifier) {
     val foreground = Color(contrastColor(color))
-    Box(modifier.fillMaxWidth().height(104.dp).background(Color(color), RoundedCornerShape(18.dp)).padding(16.dp)) {
+    Box(modifier.fillMaxWidth().height(104.dp).background(Color(color), RoundedCornerShape(18.dp)).clickable(onClick = onLock).padding(16.dp)) {
         Text(colorToHex(color), color = foreground, style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold, modifier = Modifier.align(Alignment.BottomStart))
         Row(Modifier.align(Alignment.TopEnd)) {
             IconButton(onClick = onCopy) { Icon(Icons.Default.ContentCopy, "Copy ${colorToHex(color)}", tint = foreground) }

@@ -2,7 +2,6 @@ package com.colordiffusion.app
 
 import android.Manifest
 import android.content.Intent
-import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -51,10 +50,10 @@ private fun ColorDiffusionApp(viewModel: PaletteViewModel = viewModel()) {
     var cameraUri by remember { mutableStateOf<Uri?>(null) }
     val snackbar = remember { SnackbarHostState() }
     val gallery = rememberLauncherForActivityResult(ActivityResultContracts.GetContent()) { uri ->
-        uri?.let { viewModel.extractFromUri(it) }
+        uri?.let(viewModel::extract)
     }
     val camera = rememberLauncherForActivityResult(ActivityResultContracts.TakePicture()) { captured ->
-        if (captured) cameraUri?.let { viewModel.extractFromUri(it) }
+        if (captured) cameraUri?.let(viewModel::extract)
     }
     val cameraPermission = rememberLauncherForActivityResult(ActivityResultContracts.RequestPermission()) { granted ->
         if (granted) cameraUri?.let(camera::launch)
@@ -85,11 +84,5 @@ private fun ColorDiffusionApp(viewModel: PaletteViewModel = viewModel()) {
                 }) else FavoritesScreen(viewModel)
             }
         }
-    }
-}
-
-private fun PaletteViewModel.extractFromUri(uri: Uri) {
-    getApplication<android.app.Application>().contentResolver.openInputStream(uri)?.use { stream ->
-        BitmapFactory.decodeStream(stream)?.let(::extract)
     }
 }

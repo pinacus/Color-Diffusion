@@ -2,6 +2,7 @@ package com.colordiffusion.app.viewmodel
 
 import android.app.Application
 import android.graphics.Bitmap
+import android.net.Uri
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.colordiffusion.app.data.AppDatabase
@@ -12,6 +13,7 @@ import com.colordiffusion.app.util.generatePalette
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 class PaletteViewModel(application: Application) : AndroidViewModel(application) {
@@ -28,4 +30,11 @@ class PaletteViewModel(application: Application) : AndroidViewModel(application)
     fun saveCurrent() { viewModelScope.launch { dao.insert(PaletteEntity(colors = _colors.value.joinToString(",") { colorToHex(it) })) } }
     fun deleteFavorite(palette: PaletteEntity) { viewModelScope.launch { dao.delete(palette) } }
     fun extract(bitmap: Bitmap) { viewModelScope.launch { setExtractedPalette(extractPalette(bitmap)) } }
+    fun extract(uri: Uri) {
+        viewModelScope.launch(Dispatchers.IO) {
+            getApplication<Application>().contentResolver.openInputStream(uri)?.use { stream ->
+                android.graphics.BitmapFactory.decodeStream(stream)?.let { setExtractedPalette(extractPalette(it)) }
+            }
+        }
+    }
 }
