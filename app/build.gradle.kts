@@ -1,3 +1,5 @@
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
@@ -7,11 +9,18 @@ plugins {
 
 android { namespace = "com.colordiffusion.app"; compileSdk = 35
     defaultConfig { applicationId = "com.colordiffusion.app"; minSdk = 26; targetSdk = 35; versionCode = 1; versionName = "1.0" }
+    compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_22
+        targetCompatibility = JavaVersion.VERSION_22
+    }
     buildFeatures { compose = true }
     packaging { resources.excludes += "/META-INF/{AL2.0,LGPL2.1}" }
 }
 
-kotlin { jvmToolchain(17) }
+kotlin {
+    jvmToolchain(25)
+    compilerOptions { jvmTarget.set(JvmTarget.JVM_22) }
+}
 
 dependencies {
     val composeBom = platform("androidx.compose:compose-bom:2024.12.01")

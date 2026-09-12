@@ -25,11 +25,13 @@ import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.ClipEntry
 import androidx.compose.ui.platform.LocalClipboardManager
+import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.foundation.layout.width
@@ -39,8 +41,8 @@ import kotlinx.coroutines.launch
 
 @Composable
 fun HomeScreen(viewModel: PaletteViewModel, snackbar: SnackbarHostState, onGallery: () -> Unit, onCamera: () -> Unit, onShare: (String) -> Unit) {
-    val colors = viewModel.colors.value
-    val locked = viewModel.locked.value
+    val colors by viewModel.colors.collectAsStateWithLifecycle()
+    val locked by viewModel.locked.collectAsStateWithLifecycle()
     val clipboard = LocalClipboardManager.current
     val scope = rememberCoroutineScope()
     LazyColumn(Modifier.fillMaxSize().padding(horizontal = 20.dp), verticalArrangement = Arrangement.spacedBy(10.dp)) {
@@ -62,7 +64,7 @@ fun HomeScreen(viewModel: PaletteViewModel, snackbar: SnackbarHostState, onGalle
         }
         itemsIndexed(colors) { index, color ->
             ColorCard(color, locked[index], { viewModel.toggleLock(index) }, {
-                clipboard.setClipEntry(ClipEntry.newPlainText("HEX", colorToHex(color)))
+                clipboard.setText(AnnotatedString(colorToHex(color)))
                 scope.launch { snackbar.showSnackbar("${colorToHex(color)} copied") }
             })
         }
@@ -72,7 +74,7 @@ fun HomeScreen(viewModel: PaletteViewModel, snackbar: SnackbarHostState, onGalle
                 Button(onClick = { viewModel.generate() }, modifier = Modifier.weight(1f), contentPadding = ButtonDefaults.ButtonWithIconContentPadding) {
                     Icon(Icons.Default.Refresh, null); Spacer(Modifier.width(8.dp)); Text("Generate")
                 }
-                OutlinedButton(onClick = { viewModel.saveCurrent(); scope.launch { snackbar.showSnackbar("Palette saved to favorites") } }, modifier = Modifier.weight(1f)) {
+                OutlinedButton(onClick = { viewModel.saveCurrent() }, modifier = Modifier.weight(1f)) {
                     Icon(Icons.Default.FavoriteBorder, null); Spacer(Modifier.width(8.dp)); Text("Save")
                 }
             }

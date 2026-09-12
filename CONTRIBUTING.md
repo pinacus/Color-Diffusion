@@ -10,10 +10,11 @@ Thanks for helping improve Color Diffusion.
 
 ## Development
 
-Open the project in Android Studio with JDK 17 and Android SDK 35 installed. Run the local checks before opening a pull request:
+Open the project in Android Studio with JDK 25 and Android SDK 35 installed. Before running local checks, load the project environment:
 
 ```bash
-gradle lintDebug assembleDebug
+source ./env.sh
+./gradlew lintDebug assembleDebug
 ```
 
 For UI changes, test on both light and dark themes and on a compact screen. For camera or gallery changes, verify cancellation and permission-denied flows.

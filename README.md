@@ -18,15 +18,18 @@ Kotlin, Jetpack Compose, Material 3, MVVM, Room, and AndroidX Palette.
 
 ## Run locally
 
-1. Install Android Studio with JDK 17 and Android SDK 35.
+1. Install Android Studio with JDK 25 and Android SDK 35.
 2. Open this project in Android Studio.
 3. Let Gradle sync, then run the `app` configuration on an Android 8.0+ device or emulator.
 
 To build from a terminal:
 
 ```bash
+source ./env.sh
 ./gradlew lintDebug assembleDebug
 ```
+
+The environment script selects Java 25 and the Android SDK at `$HOME/Android/Sdk`.
 
 The debug APK is created at `app/build/outputs/apk/debug/app-debug.apk`.
 

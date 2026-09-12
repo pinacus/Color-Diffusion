@@ -1,7 +1,6 @@
 package com.colordiffusion.app.ui
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -24,6 +23,9 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -31,14 +33,16 @@ import com.colordiffusion.app.util.colorToHex
 import com.colordiffusion.app.util.contrastColor
 
 @Composable fun PaletteRow(colors: List<Int>, modifier: Modifier = Modifier) {
-    Row(modifier.fillMaxWidth().height(44.dp), horizontalArrangement = Arrangement.spacedBy(3.dp)) {
-        colors.forEach { color -> Box(Modifier.weight(1f).fillMaxHeight().background(Color(color))) }
+    Row(modifier.fillMaxWidth().height(44.dp).clip(RoundedCornerShape(12.dp)), horizontalArrangement = Arrangement.spacedBy(3.dp)) {
+        colors.forEach { color ->
+            Box(Modifier.weight(1f).fillMaxHeight().background(Color(color)).semantics { contentDescription = colorToHex(color) })
+        }
     }
 }
 
 @Composable fun ColorCard(color: Int, isLocked: Boolean, onLock: () -> Unit, onCopy: () -> Unit, modifier: Modifier = Modifier) {
     val foreground = Color(contrastColor(color))
-    Box(modifier.fillMaxWidth().height(104.dp).background(Color(color), RoundedCornerShape(18.dp)).clickable(onClick = onLock).padding(16.dp)) {
+    Box(modifier.fillMaxWidth().height(104.dp).background(Color(color), RoundedCornerShape(18.dp)).padding(16.dp)) {
         Text(colorToHex(color), color = foreground, style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold, modifier = Modifier.align(Alignment.BottomStart))
         Row(Modifier.align(Alignment.TopEnd)) {
             IconButton(onClick = onCopy) { Icon(Icons.Default.ContentCopy, "Copy ${colorToHex(color)}", tint = foreground) }
